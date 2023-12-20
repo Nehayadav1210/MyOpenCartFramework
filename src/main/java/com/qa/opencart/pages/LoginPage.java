@@ -21,7 +21,7 @@ public class LoginPage {
 	private By forgotPwdLink=By.linkText("Forgotten Password");
 	private By aboutUs=By.linkText("About Us");
 	private By registerLink=By.linkText("Register");
-	
+	private By neha=By.linkText("neha");
 	//page consturutor
 	public LoginPage (WebDriver driver) {
 		this.driver=driver;
