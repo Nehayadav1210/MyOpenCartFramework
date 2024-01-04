@@ -27,7 +27,7 @@ public class LoginPageTest extends BaseTest {
 		Assert.assertEquals(actualtitle, AppConstants.LOGIN_PAGE_TITLE);
 	}
 	
-	@Description("Login page url test........")
+	@Description("Login page url test verification........")
 	@Severity(SeverityLevel.NORMAL)
 	@Test(priority = 2)
 	public void loginPageURLTest()
