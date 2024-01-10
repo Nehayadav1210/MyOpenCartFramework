@@ -1,38 +1,10 @@
-pipeline 
-{
+pipeline {
     agent any
-    
-
-
-    stages
-    {
-        stage('Build')
-        {
-            steps
-            {
-
-                 mvn 'clean install'
+    stages {
+        stage('Hello World') {
+            steps {
+                sh 'echo Hello World'
             }
-
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-           }
+    }
 }
