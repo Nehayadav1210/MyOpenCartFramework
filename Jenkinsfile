@@ -84,7 +84,8 @@ pipeline
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     git 'https://github.com/Nehayadav1210/MyOpenCartFramework.git'
-                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml"
+                    sh "mvn clean test -Dsurefire.suiteXmlFiles=/Users/nehayadav/.jenkins/workspace/MyPOMFrameworkPipeline/src/test/resources/testrunners/testng_sanity.xml
+"
 
                 }
             }
