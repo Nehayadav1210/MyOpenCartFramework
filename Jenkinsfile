@@ -13,7 +13,7 @@ pipeline
         {
             steps
             {
-                 git 'https://github.com/Nehayadav1210/simple-maven-project-with-tests_fork'
+                 git 'https://github.com/Nehayadav1210/simple-maven-project-with-tests.git'
                  sh "mvn -Dmaven.test.failure.ignore=true clean package"
             }
             post
@@ -39,7 +39,7 @@ pipeline
         stage('Regression Automation Tests') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    git 'https://github.com/Nehayadav1210/simple-maven-project-with-tests_fork'
+                    git 'https://github.com/Nehayadav1210/MyOpenCartFramework.git'
                     sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_Regression.xml"
 
                 }
@@ -83,7 +83,7 @@ pipeline
         stage('Sanity Automation Test') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    git 'https://github.com/Nehayadav1210/simple-maven-project-with-tests_fork'
+                    git 'https://github.com/Nehayadav1210/MyOpenCartFramework.git'
                     sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml"
 
                 }
