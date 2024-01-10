@@ -1,32 +1,116 @@
-pipeline {
+
+pipeline
+{
     agent any
 
-    tools {
-        // Install the Maven version configured as "M3" and add it to the path.
-        maven "Maven"
-    }
+    tools{
+        maven 'Maven'
+        }
 
-    stages {
-        stage('Build') {
-            steps {
-                // Get some code from a GitHub repository
-                git 'https://github.com/jglick/simple-maven-project-with-tests.git'
-
-                // Run Maven on a Unix agent.
-                sh "mvn -Dmaven.test.failure.ignore=true clean package"
-
-                // To run Maven on a Windows agent, use
-                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+    stages
+    {
+        stage('Build')
+        {
+            steps
+            {
+                 git 'https://github.com/Nehayadav1210/simple-maven-project-with-tests_fork'
+                 sh "mvn -Dmaven.test.failure.ignore=true clean package"
             }
-
-            post {
-                // If Maven was able to run the tests, even if some of the test
-                // failed, record the test results and archive the jar file.
-                success {
+            post
+            {
+                success
+                {
                     junit '**/target/surefire-reports/TEST-*.xml'
                     archiveArtifacts 'target/*.jar'
                 }
             }
         }
+
+
+
+        stage("Deploy to QA"){
+            steps{
+                echo("deploy to qa")
+            }
+        }
+
+
+
+        stage('Regression Automation Tests') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    git 'https://github.com/Nehayadav1210/simple-maven-project-with-tests_fork'
+                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_Regression.xml"
+
+                }
+            }
+        }
+
+
+        stage('Publish Allure Reports') {
+           steps {
+                script {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        properties: [],
+                        reportBuildPolicy: 'ALWAYS',
+                        results: [[path: '/allure-results']]
+                    ])
+                }
+            }
+        }
+
+
+        stage('Publish Extent Report'){
+            steps{
+                     publishHTML([allowMissing: false,
+                                  alwaysLinkToLastBuild: false,
+                                  keepAll: true,
+                                  reportDir: 'reports',
+                                  reportFiles: 'TestExecutionReport.html',
+                                  reportName: 'HTML Regression Extent Report',
+                                  reportTitles: ''])
+            }
+        }
+
+        stage("Deploy to Stage"){
+            steps{
+                echo("deploy to Stage")
+            }
+        }
+
+        stage('Sanity Automation Test') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    git 'https://github.com/Nehayadav1210/simple-maven-project-with-tests_fork'
+                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml"
+
+                }
+            }
+        }
+
+
+
+        stage('Publish sanity Extent Report'){
+            steps{
+                     publishHTML([allowMissing: false,
+                                  alwaysLinkToLastBuild: false,
+                                  keepAll: true,
+                                  reportDir: 'reports',
+                                  reportFiles: 'TestExecutionReport.html',
+                                  reportName: 'HTML Sanity Extent Report',
+                                  reportTitles: ''])
+            }
+        }
+
+
+        stage("Deploy to PROD"){
+            steps{
+                echo("deploy to PROD")
+            }
+        }
+
+
     }
 }
