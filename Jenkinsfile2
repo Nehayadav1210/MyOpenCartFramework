@@ -1,0 +1,40 @@
+pipeline 
+{
+    agent any
+    
+    tools{
+        maven 'Maven'
+        }
+
+    stages 
+    {
+        stage('Build') 
+        {
+            steps
+            {
+                 git 'https://github.com/Nehayadav1210/simple-maven-project-with-tests_fork'
+                 sh "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+
+        }
+        
+        
+
+        
+
+     
+
+        
+        
+
+        
+
+
+        
+        
+        
+
+        
+        
+           }
+}
