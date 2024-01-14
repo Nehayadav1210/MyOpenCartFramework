@@ -4,18 +4,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
-import java.util.logging.FileHandler;
-
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
-import com.google.common.io.Files;
+
 
 import com.qa.opencart.exception.FrameworkException;
 
@@ -35,29 +36,58 @@ public WebDriver initDriver(Properties prop) {
 	String browserName=prop.getProperty("browser");
 	//String browserName=System.getProperty("browser");
 	
-	System.out.print("browsername is =" +browserName);
+	System.out.print("browser name is =" +browserName);
 	highlight=prop.getProperty("highlight");
 	
 	optionManager=new OptionsManager(prop);
 	
 	switch (browserName.toLowerCase().trim()) {
 	case "chrome":
-		 
-	//driver=new ChromeDriver(optionManager.getChromeOption());
-	tldriver.set(new ChromeDriver(optionManager.getChromeOption()));
+		
+		if (Boolean.parseBoolean(prop.getProperty("remote")))
+		{
+			
+			//run it on remote/grid
+			
+			
+			initRemoteDriver(browserName);
+
+			} 
+		
+		else 
+		{//run on local
+			 
+			//driver=new ChromeDriver(optionManager.getChromeOption());
+			tldriver.set(new ChromeDriver(optionManager.getChromeOption()));
+		}
+	
 	
 	break;
 	case "firefox":
+		if (Boolean.parseBoolean(prop.getProperty("remote")))
+		{
+			
+			//run it on remote/grid
+			initRemoteDriver(browserName);
+
+			} else {
 		 //driver=new FirefoxDriver(optionManager.getFirefoxOption());
 		
 		tldriver.set(new FirefoxDriver(optionManager.getFirefoxOption()));
-		
+			}
 		
 		break;
 	case "edge":
+		if (Boolean.parseBoolean(prop.getProperty("remote")))
+		{
+			
+			//run it on remote/grid
+			initRemoteDriver(browserName);
+
+			} else {
 		//driver=new EdgeDriver(optionManager.getEdgeOptions());
 		tldriver.set(new EdgeDriver(optionManager.getEdgeOptions()));
-		
+			}
 		break;
 	case "safari":
 		// driver=new SafariDriver();
@@ -75,6 +105,35 @@ getDriver().manage().window().maximize();
 getDriver().get(prop.getProperty("url"));
 
 return getDriver();
+}
+
+
+
+
+private void initRemoteDriver(String browserName) {
+	// TODO Auto-generated method stub
+	System.out.println("Running test on GRid with Browser:"+browserName);
+	try {
+		switch (browserName.toLowerCase().trim()) {
+		case "chrome":
+			tldriver.set(
+					new RemoteWebDriver(new URL(prop.getProperty("huburl")), optionManager.getChromeOption()));
+			break;
+		case "firefox":
+			tldriver.set(
+					new RemoteWebDriver(new URL(prop.getProperty("huburl")), optionManager.getFirefoxOption()));
+			break;
+		case "edge":
+			tldriver.set(new RemoteWebDriver(new URL(prop.getProperty("huburl")), optionManager.getEdgeOptions()));
+			break;
+
+		default:
+			System.out.println("wrong browser info..can not run on grid remote machine....");
+			break;
+		}
+	} catch (MalformedURLException e) {
+
+	}
 }
 
 public  static WebDriver getDriver() {
@@ -95,7 +154,9 @@ String envName=	System.getProperty("env");
 System.out.println("env name=:"+envName);
 	try {
 if(envName==null)
+	
 {
+	System.out.println("your env is null...hence running tests on QA env...");
 	ip=new FileInputStream("./src/test/resources/config/config.qa.properties");
 	}
 else {

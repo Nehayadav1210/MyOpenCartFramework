@@ -1,10 +1,12 @@
 package com.qa.opencart.tests;
 
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.qa.opencart.base.BaseTest;
 import com.qa.opencart.constants.AppConstants;
+import com.qa.opencart.listeners.TestAllureListener;
 
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
@@ -17,6 +19,7 @@ import io.qameta.allure.Story;
 @Epic("Epic 100:Design open cart login page")
 @Story("US 101: Login pge features")
 @Feature("F50: Feature Login Page")
+@Listeners(TestAllureListener.class)
 public class LoginPageTest extends BaseTest {
 	@Description("Login page title test........")
 	@Severity(SeverityLevel.MINOR)

@@ -20,6 +20,16 @@ public	OptionsManager (Properties prop) {
 		co=   new ChromeOptions();
 		if(Boolean.parseBoolean(prop.getProperty("headless").trim()))co.addArguments("------headless");
 		if(Boolean.parseBoolean(prop.getProperty("incognito").trim()))co.addArguments("------incognito");
+		if(Boolean.parseBoolean(prop.getProperty("remote")))
+		{
+			co.setCapability("browserName", "chrome");
+			//co.setBrowserVersion(prop.getProperty("browserversion").trim());
+			//co.setCapability("enableVNC", true);
+		}
+		
+		
+		
+		
 		return co;
 		}
 	
